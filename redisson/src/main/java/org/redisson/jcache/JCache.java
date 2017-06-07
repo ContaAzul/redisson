@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
@@ -312,7 +313,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
 
     V load(K key) {
         RLock lock = getLock(key);
-        lock.lock();
+        lock.lock(5, TimeUnit.SECONDS);
         try {
             V value = getValueLocked(key);
             if (value == null) {
@@ -701,7 +702,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
                     try {
                         if (!containsKey(key) || replaceExistingValues) {
                             RLock lock = getLock(key);
-                            lock.lock();
+                            lock.lock(5, TimeUnit.SECONDS);
                             try {
                                 if (!containsKey(key)|| replaceExistingValues) {
                                     V value;
@@ -741,7 +742,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
     private RLock getLockedLock(K key) {
         String lockName = getLockName(key);
         RLock lock = redisson.getLock(lockName);
-        lock.lock();
+        lock.lock(5, TimeUnit.SECONDS);
         return lock;
     }
 
@@ -759,7 +760,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 List<Object> result = getAndPutValueLocked(key, value);
                 if (result.isEmpty()) {
@@ -969,7 +970,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 List<Object> result = getAndPutValueLocked(key, value);
                 if (result.isEmpty()) {
@@ -1067,7 +1068,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
             long startTime = currentNanoTime();
             if (config.isWriteThrough()) {
                 RLock lock = getLock(key);
-                lock.lock();
+                lock.lock(5, TimeUnit.SECONDS);
                 
                 List<Object> result = getAndPutValue(key, value);
                 if (result.isEmpty()) {
@@ -1171,7 +1172,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 boolean result = putIfAbsentValueLocked(key, value);
                 if (result) {
@@ -1253,7 +1254,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = System.currentTimeMillis();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 V oldValue = getValue(key);
                 boolean result = removeValue(key);
@@ -1394,7 +1395,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         boolean result;
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 result = removeValueLocked(key, value);
                 if (result) {
@@ -1486,7 +1487,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 Object value = getAndRemoveValue(key);
                 if (value != null) {
@@ -1689,7 +1690,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 long result = replaceValueLocked(key, oldValue, newValue);
                 if (result == 1) {
@@ -1933,7 +1934,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 boolean result = replaceValueLocked(key, value);
                 if (result) {
@@ -1987,7 +1988,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         long startTime = currentNanoTime();
         if (config.isWriteThrough()) {
             RLock lock = getLock(key);
-            lock.lock();
+            lock.lock(5, TimeUnit.SECONDS);
             try {
                 V result = getAndReplaceValueLocked(key, value);
                 if (result != null) {
@@ -2045,7 +2046,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
         if (config.isWriteThrough()) {
             for (K key : keys) {
                 RLock lock = getLock(key);
-                lock.lock();
+                lock.lock(5, TimeUnit.SECONDS);
                 V result = getAndRemoveValue(key);
                 if (result != null) {
                     deletedKeys.put(key, result);
