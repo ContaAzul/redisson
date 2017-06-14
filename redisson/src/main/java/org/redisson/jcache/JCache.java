@@ -98,7 +98,7 @@ public class JCache<K, V> extends RedissonObject implements Cache<K, V> {
     private static final RedisCommand<Boolean> EVAL_REMOVE_KEY_VALUE = new RedisCommand<Boolean>("EVAL", new BooleanReplayConvertor(), 8, ValueType.MAP);
     private static final RedisCommand<Boolean> EVAL_CONTAINS_KEY = new RedisCommand<Boolean>("EVAL", new BooleanReplayConvertor(), 6, ValueType.MAP_KEY);
 
-    private static final long LEASE_TIME = 9000;
+    private static final long LEASE_TIME = 1500;
     
     private final JCacheManager cacheManager;
     private final JCacheConfiguration<K, V> config;
